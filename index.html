@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UnderCards Tracker - Statistiques et historique de parties">
+
+    <title>UnderCards Tracker</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-wasm.js"></script>
+    <script src="js/database.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/statistics.js" defer></script>
+    <script src="js/navigation.js" defer></script>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>UnderCards</h1>
+                <span>TRACKER</span>
+            </div>
+
+            <nav>
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#statistics" class="nav-link">Statistiques</a>
+                <a href="#matches" class="nav-link">Parties</a>
+                <a href="#adversaries" class="nav-link">Adversaires</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span>UnderCards Tracker</span>
+                <span>Version 0.1.0</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h2>Dashboard</h2>
+                    <p>Vue générale de tes statistiques</p>
+                </div>
+
+                <div id="database-status" class="status">
+                    Chargement de la base...
+                </div>
+            </header>
+
+            <section id="dashboard">
+                <div class="section-header">
+                    <h3>Profil du joueur</h3>
+                    <span id="last-updated">Dernière mise à jour : --</span>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Pseudo</span>
+                        <strong id="player-name">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Division</span>
+                        <strong id="player-division">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">ELO</span>
+                        <strong id="player-elo">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">XP avant prochain niveau</span>
+                        <strong id="player-xp-next">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Or</span>
+                        <strong id="player-gold">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">XP</span>
+                        <strong id="player-xp">--</strong>
+                    </article>
+                </div>
+
+                <div class="section-header">
+                    <h3>Statistiques du mois</h3>
+                    <span id="current-month">--</span>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Victoires</span>
+                        <strong id="monthly-wins" class="victory">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Défaites</span>
+                        <strong id="monthly-losses" class="defeat">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Taux de victoire</span>
+                        <strong id="monthly-winrate">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Parties jouées</span>
+                        <strong id="monthly-games">--</strong>
+                    </article>
+                </div>
+
+                <div class="section-header">
+                    <h3>Statistiques globales</h3>
+                    <span>Toutes les parties enregistrées</span>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Victoires totales</span>
+                        <strong id="total-wins" class="victory">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Défaites totales</span>
+                        <strong id="total-losses" class="defeat">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Parties jouées</span>
+                        <strong id="total-games">--</strong>
+                    </article>
+
+                    <article class="stat-card">
+                        <span class="stat-label">Taux de victoire</span>
+                        <strong id="total-winrate">--</strong>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Statistiques -->
+            <section id="statistics">
+
+                <div class="section-header">
+                    <h3>Statistiques</h3>
+                    <span>Évolution de tes performances</span>
+                </div>
+
+                <div class="charts-grid">
+
+                    <article class="chart-card">
+                        <h4>Winrate mensuel</h4>
+                        <p>Comparaison des mois terminés</p>
+                        <div class="chart-container">
+                            <canvas id="monthly-winrate-chart"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <h4>Winrate du mois en cours</h4>
+                        <p>Évolution après chaque partie</p>
+                        <div class="chart-container">
+                            <canvas id="current-winrate-chart"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <h4>ELO mensuel</h4>
+                        <p>ELO à la fin de chaque mois</p>
+                        <div class="chart-container">
+                            <canvas id="monthly-elo-chart"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="chart-card">
+                        <h4>Évolution de l'ELO</h4>
+                        <p>Évolution après chaque partie du mois</p>
+                        <div class="chart-container">
+                            <canvas id="current-elo-chart"></canvas>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+             
+            <section id="matches">
+                <div class="section-header">
+                    <h3>Dernières parties du mois</h3>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Adversaire</th>
+                                <th>Résultat</th>
+                                <th>Âme</th>
+                                <th>ELO</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recent-matches">
+                            <tr>
+                                <td colspan="5">Chargement des parties...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Adversaires -->
+            <section id="adversaries">
+
+                <div class="section-header">
+                    <h3>Adversaires</h3>
+                    <span>Statistiques globales</span>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adversaire</th>
+                                <th>Victoires</th>
+                                <th>Défaites</th>
+                                <th>Parties</th>
+                                <th>Winrate</th>
+                                <th>Dernière rencontre</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adversaries-table">
+                            <tr>
+                                <td colspan="6">Chargement des adversaires...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+        </main>
+    </div>
+</body>
+</html>
