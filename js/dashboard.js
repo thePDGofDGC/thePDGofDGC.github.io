@@ -127,6 +127,33 @@ function loadTotalStats() {
 /**
  * Charge les dernières parties.
  */
+
+/**
+ * Formate une liste d'artefacts.
+ */
+function formatArtifacts(value) {
+    if (!value) {
+        return "--";
+    }
+
+    try {
+        const artifacts = typeof value === "string"
+            ? JSON.parse(value)
+            : value;
+
+        if (!Array.isArray(artifacts) || artifacts.length === 0) {
+            return "--";
+        }
+
+        return artifacts.join(", ");
+    } catch {
+        return "--";
+    }
+}
+
+/**
+ * Charge les dernières parties.
+ */
 function loadRecentMatches() {
     const player = window.uctDatabase.queryOne(`
         SELECT current_month
@@ -139,6 +166,9 @@ function loadRecentMatches() {
             matches.date,
             matches.result,
             matches.soul,
+            matches.opponent_soul,
+            matches.artifacts,
+            matches.opponent_artifacts,
             matches.old_elo,
             matches.new_elo,
             adversaries.opponent_name
@@ -155,7 +185,7 @@ function loadRecentMatches() {
     if (matches.length === 0) {
         const row = document.createElement("tr");
         const cell = document.createElement("td");
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         cell.textContent = "Aucune partie enregistrée ce mois-ci.";
         row.appendChild(cell);
         tbody.appendChild(row);
@@ -173,11 +203,7 @@ function loadRecentMatches() {
         const values = [
             formatDate(match.date),
             match.opponent_name ?? "Inconnu",
-            match.result === "victory" ? "Victoire" : "Défaite",
-            match.soul ?? "--",
-            eloChange === null
-                ? "--"
-                : `${eloChange > 0 ? "+" : ""}${eloChange}`
+            match.result === "victory" ? "Victoire" : "Défaite"
         ];
 
         values.forEach((value, index) => {
@@ -195,9 +221,48 @@ function loadRecentMatches() {
             row.appendChild(cell);
         });
 
+        // Âmes
+        const soulCell = document.createElement("td");
+        soulCell.classList.add("match-details");
+
+        const playerSoul = document.createElement("div");
+        playerSoul.textContent = `Toi : ${match.soul ?? "--"}`;
+
+        const opponentSoul = document.createElement("div");
+        opponentSoul.textContent = `Adversaire : ${match.opponent_soul ?? "--"}`;
+
+        soulCell.append(playerSoul, opponentSoul);
+        row.appendChild(soulCell);
+
+        // Artefacts
+        const artifactsCell = document.createElement("td");
+        artifactsCell.classList.add("match-details", "match-artifacts");
+
+        const playerArtifacts = document.createElement("div");
+        playerArtifacts.textContent =
+            `Toi : ${formatArtifacts(match.artifacts)}`;
+
+        const opponentArtifacts = document.createElement("div");
+        opponentArtifacts.textContent =
+            `Adversaire : ${formatArtifacts(match.opponent_artifacts)}`;
+
+        artifactsCell.append(playerArtifacts, opponentArtifacts);
+        row.appendChild(artifactsCell);
+
+        // Variation ELO
+        const eloCell = document.createElement("td");
+        eloCell.classList.add("elo-change");
+
+        eloCell.textContent = eloChange === null
+            ? "--"
+            : `${eloChange > 0 ? "+" : ""}${eloChange}`;
+
+        row.appendChild(eloCell);
+
         tbody.appendChild(row);
     }
 }
+
 
 function loadAdversaries() {
     const adversaries = window.uctDatabase.queryAll(`

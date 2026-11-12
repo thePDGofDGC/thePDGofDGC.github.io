@@ -435,3 +435,28 @@ tbody td[colspan] {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ==============================
+   Détails des parties
+   ============================== */
+
+.match-details {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.match-artifacts {
+    font-size: 10px;
+    line-height: 1.6;
+    opacity: 0.8;
+    white-space: normal;
+}
+
+.elo-change {
+    color: #60cfff;
+    font-weight: 700;
+    white-space: nowrap;
+}
