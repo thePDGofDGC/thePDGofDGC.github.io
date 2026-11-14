@@ -303,19 +303,27 @@ function loadAdversaries() {
     }).join("");
 }
 
+
+/**
+ * Actualise le dashboard et les graphiques.
+ */
+function refreshDashboard() {
+    const player = loadPlayer();
+
+    loadMonthlyStats(player.current_month);
+    loadTotalStats();
+    loadRecentMatches();
+    loadAdversaries();
+    loadStatistics();
+}
+
 /**
  * Initialise le dashboard.
  */
 async function initializeDashboard() {
     try {
         await window.databaseReady;
-
-        const player = loadPlayer();
-
-        loadMonthlyStats(player.current_month);
-        loadTotalStats();
-        loadRecentMatches();
-        loadAdversaries();
+        refreshDashboard();
 
     } catch (error) {
         console.error("[UnderCards Tracker]", error);
@@ -324,4 +332,19 @@ async function initializeDashboard() {
         status.textContent = "Erreur lors du chargement des statistiques";
     }
 }
+
+// Changement de joueur.
+document.getElementById("player-select").addEventListener("change", async event => {
+    try {
+        await window.loadPlayerDatabase(event.target.value);
+        refreshDashboard();
+
+    } catch (error) {
+        console.error("[UnderCards Tracker]", error);
+
+        const status = document.getElementById("database-status");
+        status.textContent = "Erreur lors du changement de joueur";
+    }
+});
+
 initializeDashboard();

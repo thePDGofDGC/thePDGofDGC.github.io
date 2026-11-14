@@ -12,9 +12,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-wasm.js"></script>
     <script src="js/database.js" defer></script>
-    <script src="js/dashboard.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/statistics.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
     <script src="js/navigation.js" defer></script>
 </head>
 
@@ -44,6 +44,14 @@
                 <div>
                     <h2>Dashboard</h2>
                     <p>Vue générale de tes statistiques</p>
+                </div>
+
+                <div class="player-selector">
+                    <label for="player-select">Joueur :</label>
+                    <select id="player-select">
+                        <option value="655564">thePDGofDGC</option>
+                        <option value="IDENTIFIANT">PSEUDO</option>
+                    </select>
                 </div>
 
                 <div id="database-status" class="status">

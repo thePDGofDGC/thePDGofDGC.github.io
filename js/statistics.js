@@ -168,7 +168,3 @@ function loadCurrentEloChart() {
         }
     });
 }
-
-window.databaseReady.then(loadStatistics).catch(error => {
-    console.error("[UnderCards Tracker] Erreur des graphiques :", error);
-});
